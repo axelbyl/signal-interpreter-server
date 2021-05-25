@@ -1,4 +1,4 @@
-from routes import signal_interpreter_app
+from src.routes import signal_interpreter_app
 
 def main():
     signal_interpreter_app.run()
