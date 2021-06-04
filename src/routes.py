@@ -1,17 +1,15 @@
 # routes.py
-from flask import Flask, request
+from flask import Flask, request, jsonify
+from src.json_parser import JsonParser
+
 
 signal_interpreter_app = Flask(__name__)
-
-
-@signal_interpreter_app.route("/", methods=["GET"])
-def hello():
-    return "Hello world!"
+json_parser = JsonParser()
 
 
 @signal_interpreter_app.route("/", methods=["POST"])
-def mirror_data():
+def interpret_signal():
     data = request.get_json()
-    return data
-
+    signal_title = json_parser.get_signal_title(data['signal'])
+    return jsonify(signal_title)
 
