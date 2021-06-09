@@ -1,5 +1,5 @@
 from unittest.mock import patch
-from src.main import parse_arguments, main, ArgumentParser, json_parser, signal_interpreter_app
+from src.main import parse_arguments, main, ArgumentParser, json_parser, signal_interpreter_app, init
 
 
 class MockArgs:
@@ -11,7 +11,7 @@ class MockArgs:
 def test_parse_arguments(mock_parse_args, mock_add_argument):
     assert parse_arguments() == MockArgs
     mock_parse_args.assert_called_once()
-    mock_add_argument.assert_called_with("--file_path")
+    mock_add_argument.assert_called_with("--file-path")
 
 
 @patch.object(signal_interpreter_app, "run")
@@ -22,3 +22,10 @@ def test_main(mock_parse_arguments, mock_load_file, mock_run):
     mock_parse_arguments.assert_called_once()
     mock_load_file.assert_called_once()
     mock_run.assert_called_once()
+
+
+@patch("src.main.main")
+@patch("src.main.__name__", "__main__")
+def test_init(mock_main):
+    init()
+    mock_main.assert_called_once()
