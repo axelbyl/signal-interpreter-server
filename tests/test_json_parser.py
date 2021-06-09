@@ -5,7 +5,7 @@ from src.json_parser import JsonParser
 def test_load_file():
     json_parser = JsonParser()
     assert json_parser.data == None
-    json_parser.load_file(r'..\signal_database.json')
+    json_parser.load_file(r'signal_database.json')
     assert json_parser.data != None
 
 
