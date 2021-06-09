@@ -6,12 +6,12 @@ class MockArgs:
     file_path = "path/to/file"
 
 
-@patch.object(ArgumentParser, "add_argument")
 @patch.object(ArgumentParser, "parse_args", return_value=MockArgs)
-def test_parse_arguments(mock_parse_args, mock_add_argument):
+@patch.object(ArgumentParser, "add_argument")
+def test_parse_arguments(mock_add_argument, mock_parse_args):
     assert parse_arguments() == MockArgs
+    mock_add_argument.assert_called_with("--file-path")
     mock_parse_args.assert_called_once()
-    mock_add_argument.assert_called_with("--file_path")
 
 
 @patch.object(signal_interpreter_app, "run")
