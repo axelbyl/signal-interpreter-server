@@ -1,6 +1,10 @@
 """This module declares the JsonParser class"""
 import json
 
+class NotInDatabase(Exception):
+    """ Error for when the requested signal is not in database """
+    def __init__(self, message):
+        self.message = message
 
 class JsonParser:
     """Jsonparser class"""
@@ -15,11 +19,9 @@ class JsonParser:
 
     def get_signal_title(self, identifier):
         """Returns title of signal with id "identifier" """
-        try:
-            for entry in self.data["services"]:
-                if entry["id"] == identifier:
-                    title = entry["title"]
-                    return title
-        except TypeError:
-            pass
-        return None
+
+        for entry in self.data["services"]:
+            if entry["id"] == identifier:
+                title = entry["title"]
+                return title
+        raise NotInDatabase("The requested id is not present in database")

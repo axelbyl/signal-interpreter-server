@@ -3,6 +3,9 @@ Initiates a flask-server and reads the json-file given as --file-path
 """
 from argparse import ArgumentParser
 from src.routes import signal_interpreter_app, json_parser
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def parse_arguments():
@@ -17,6 +20,7 @@ def main():
     """Main script to start server and read data"""
     args = parse_arguments()
     json_parser.load_file(args.file_path)
+    logger.info("Datbase parsed from  %s", args.file_path)
     signal_interpreter_app.run()
 
 
