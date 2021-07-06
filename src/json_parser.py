@@ -1,10 +1,7 @@
 """This module declares the JsonParser class"""
 import json
+from src.xml_parser import NotInDatabaseError
 
-class NotInDatabase(Exception):
-    """ Error for when the requested signal is not in database """
-    def __init__(self, message):
-        self.message = message
 
 class JsonParser:
     """Jsonparser class"""
@@ -24,4 +21,4 @@ class JsonParser:
             if entry["id"] == identifier:
                 title = entry["title"]
                 return title
-        raise NotInDatabase("The requested id is not present in database")
+        raise NotInDatabaseError("The requested id is not present in database")

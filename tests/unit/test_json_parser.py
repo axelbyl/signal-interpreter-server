@@ -1,6 +1,6 @@
-from unittest.mock import patch
+# pylint: disable=missing-docstring
 import pytest
-from src.json_parser import JsonParser
+from src.json_parser import JsonParser, NotInDatabaseError
 
 
 def test_load_file():
@@ -13,14 +13,11 @@ def test_load_file():
 @pytest.mark.parametrize("id_number, expected_result", [
     ("11", "ECU Reset"),
     ("12", "ECU Start"),
-    ("15", None),
 ])
-def test_get_signal_title(id_number, expected_result):
-    json_parser = JsonParser()
-    json_parser.data = {"services": [{"title": "ECU Reset", "id": "11"}, {"title": "ECU Stop", "id": "14"}, {"title": "ECU Start", "id": "12"}]}
-    assert json_parser.get_signal_title(id_number) == expected_result
+def test_get_signal_title(id_number, expected_result, json_parser_instance):
+    assert json_parser_instance.get_signal_title(id_number) == expected_result
 
 
-def test_get_signal_title_no_data():
-    json_parser = JsonParser()
-    assert json_parser.get_signal_title('11') == None
+def test_get_signal_title_no_data(json_parser_instance):
+    with pytest.raises(NotInDatabaseError):
+        json_parser_instance.get_signal_title('13')

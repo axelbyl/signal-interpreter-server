@@ -1,16 +1,33 @@
-from unittest.mock import patch
-from src.routes import signal_interpreter_app, json_parser
+# pylint: disable=missing-docstring
+from src.routes import parser_factory
 
 
-
-#@patch.object(json_parser, "get_signal_title", return_value="ECU Reset")
-def test_my_routes_function():
-    json_parser.data = {"services": [{"title": "ECU Reset", "id": "11"}]}
-    signal_interpreter_app.testing = True
-    signal_interpreter_app_instance = signal_interpreter_app.test_client()
+def test_routes_valid(json_parser_instance, signal_interpreter_app_instance):
+    parser_factory.set_signal_database_format("json")
+    parser = parser_factory.get_parser()
+    parser.data = json_parser_instance.data
 
     with signal_interpreter_app_instance as client:
         my_payload = {"signal": "11"}
         response = client.post("/", json=my_payload)
         assert response.get_json() == "ECU Reset"
 
+
+def test_routes_bad_request(json_parser_instance, signal_interpreter_app_instance):
+    parser_factory.set_signal_database_format("json")
+    parser = parser_factory.get_parser()
+    parser.data = json_parser_instance.data
+
+    with signal_interpreter_app_instance as client:
+        my_payload = {"sign": "11"}
+        assert client.post("/", json=my_payload).status_code == 404
+
+
+def test_routes_request_out_of_bounds(json_parser_instance, signal_interpreter_app_instance):
+    parser_factory.set_signal_database_format("json")
+    parser = parser_factory.get_parser()
+    parser.data = json_parser_instance.data
+
+    with signal_interpreter_app_instance as client:
+        my_payload = {"signal": "111"}
+        assert client.post("/", json=my_payload).status_code == 400
